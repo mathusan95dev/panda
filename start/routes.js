@@ -33,7 +33,7 @@ Route.post('/user/login', 'AuthController.login')
 // auth middleware protected routes
 Route.group(() => {
     // logout route
-    Route.get('user/logout/:id','AuthController.logout')
+    Route.get('user/logout','AuthController.logout')
     
 }).middleware(['auth:user']).prefix('api').formats(['json'])
 
@@ -46,21 +46,21 @@ Route.put('api/user/:id','UserController.update')
 Route.post('api/user/create','UserController.create')
 
 
-
+//admin controlled routes api
 //message controller routes api
 Route.delete('api/message/:id','MessageController.destroy')
 Route.post('api/messages','MessageController.create')
 Route.get('api/message/:id','MessageController.show')
 Route.put('api/message/:id','MessageController.update')
 
-
+//admin controlled routes api
 //orgcontrolller routes api
 Route.post('api/orgs','OrgController.create')
 Route.put('api/org/:id','OrgController.update')
 Route.get('api/org/:id','OrgController.show')
 Route.delete('api/org/:id','OrgController.destroy')
 
-
+//admin controlled routes api
 //logController routes api
 Route.post('api/logs','LogController.create')
 Route.put('api/log/:id','LogController.update')

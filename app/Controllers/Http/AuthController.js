@@ -75,26 +75,24 @@ class AuthController {
     }
 
 
-    async logout({params,auth})
+    async logout({auth})
     {
-        console.log(123)
+       
         try{
                 const check=await auth.check()
-                const user = await User.find(params.id)
                 console.log(check)
+               
                 if(check)
                 {
-                const token = await auth.getAuthHeader();
                 const user = await auth.user
-
-                console.log(token)
-                let val=await auth.authenticator("jwt").revokeTokensForUser(user);
-                console.log(val)
+                console.log(user)
+                await auth.authenticator("jwt").revokeTokensForUser(user);
+ 
                 return ({message: 'logged out'})
                 }   
         }catch(e)
         {
-                return ({message: 'missing or invalid jwt token'})
+          return ({message: 'missing or invalid jwt token'})
         }
     }
 
