@@ -42,7 +42,7 @@ class AuthController {
                     user1.profile_image = Helpers.tmpPath()+'/'+'profile_images'+'/'+fileName
                     await user1.save()
                 }
-                return ({message:'Successfuly Registered', status:'success'})
+                return user
         
             }
        
@@ -54,16 +54,17 @@ class AuthController {
     async login({request, auth, response}) 
     {
         let {email, password} = request.all();
-        console.log(email,password)
+       
         
         if (await auth.attempt(email, password)) 
           {
             let user = await User.findBy('email', email)
            
             let token = await auth.generate(user)
-            console.log(token)
+         
 
             Object.assign(user, token)
+            console.log(auth)
             return user
           }
           else{
@@ -85,7 +86,7 @@ class AuthController {
                 if(check)
                 {
                 const user = await auth.user
-                console.log(user)
+                console.log(user.id)
                 await auth.authenticator("jwt").revokeTokensForUser(user);
  
                 return ({message: 'logged out'})

@@ -60,7 +60,7 @@ class OrgController {
 
             const rules = 
             {
-            name: 'required',
+                name: 'required',
             }
             const validation = await validateAll(request.all(), rules)
             if(validation.fails())

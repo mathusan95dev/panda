@@ -69,3 +69,11 @@ Route.delete('api/log/:id','LogController.destroy')
 
 //list of messages related to user
 Route.get('api/user/:id/messages','MessageController.list_of_messages')
+
+//list of messages related to recipeient 
+
+Route.get('api/recipient/:id/recipient_messages','MessageController.list_of_recipient_messages')
+
+
+Route.get('api/user_recipient/:user_id/:recipient_id','MessageController.messages_between_user_recipient')
+

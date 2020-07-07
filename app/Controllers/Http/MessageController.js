@@ -1,5 +1,7 @@
 'use strict'
 const Message = use('App/Models/Message');
+const user = use('App/Models/User');
+
 const { validateAll } = use('Validator')
 const Database = use('Database')
 
@@ -9,17 +11,12 @@ class MessageController {
 
     async show({params})
     {
-
-
         const id = params.id
         const message = await Message.find(id)
         return message
-
-
-
     }
 
-    async create({params,request})
+    async create({request,auth})
     {
         const rules = 
         {
@@ -35,9 +32,20 @@ class MessageController {
         }
         else
         {
-           let user = await Message.create(request.except('user_id'))
-           user.user_id=auth.user.id;
-            return ({message:'Successfuly message is created', status:'success'})
+           
+           const message = new Message();
+           message.session_id=request.input('session_id');
+           message.user_id=auth.user.id;
+           message.subject=request.input('subject');
+           message.message=request.input('message');
+           message.is_read=request.input('is_read');
+           message.is_deleted=request.input('is_deleted');
+           message.is_retracted=request.input('is_retracted');
+           message.type_id=request.input('type_id');
+           message.options=request.input('options');
+           message.recipient_id=request.input('recipient_id');
+           await message.save();
+           return ({message:'Successfuly message is created', status:'success'})
     
         }
 
@@ -94,7 +102,7 @@ class MessageController {
                 message.type_id=request.input('type_id')
                 message.recepient_id=request.input('recepient_id')
                 await message.save()
-                return({message: 'user is updated and his id : '+id}) 
+                return({message: 'message is updated and  id : '+id}) 
             }
         }catch(e)
         {
@@ -110,9 +118,42 @@ class MessageController {
         .table('messages')
         .where('user_id', params.id)
         .select('message')
-
         return message
     }
+
+    async list_of_recipient_messages({params})
+    {
+       let message= await Database
+        .table('messages')
+        .where('recepient_id', params.id)
+        .select('message')
+        return message
+    }
+
+    async messages_between_user_recipient({params})
+    {
+
+        let messages= await Database
+        .table('messages')
+        .where({
+            user_id: params.user_id,
+            recipient_id:params.recipient_id, 
+          })
+          .select('message')
+
+          let messages1= await Database
+        .table('messages')
+        .where({
+            user_id: params.recipient_id,
+            recipient_id:params.user_id, 
+          })
+          .select('message')
+
+
+        return ({messages_user_recipient:messages,message_recipient_user:messages1})
+    }
+
+
 }
 
 module.exports = MessageController
